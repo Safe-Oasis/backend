@@ -84,16 +84,16 @@ app.get('/email', async (_, res) => res.redirect('mailto:contact@safeoasis.xyz')
 app.get('/robots.txt', async (_, res) => res.sendFile('./public/robots.txt'));
 
 // makes expres able to read uploaded files
-app.use(
-    fileUpload({
-        useTempFiles: true,
-        tempFileDir: '/tmp/',
-        limits: { fileSize: 50 * 1024 * 1024 },
-        limitHandler: (req, res) => {
-            return res.status(413).json({ error: true, message: 'FILE TOO BIG (max 50mb)' });
-        },
-    })
-);
+// app.use(
+//     fileUpload({
+//         useTempFiles: true,
+//         tempFileDir: '/tmp/',
+//         limits: { fileSize: 50 * 1024 * 1024 },
+//         limitHandler: (req, res) => {
+//             return res.status(413).json({ error: true, message: 'FILE TOO BIG (max 50mb)' });
+//         },
+//     })
+// );
 
 // 404 Handling
 app.all('*', async (_, res) => {
