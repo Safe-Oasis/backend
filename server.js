@@ -20,6 +20,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const fileUpload = require('express-fileupload');
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -37,6 +38,9 @@ const publicPath = defaultPath + 'public/';
 // create express application and init/append some data
 const app = express();
 app.data = { package: packageJSON };
+
+// load database handler, initialite it, and append it to express-app
+require('./modules/database').setupDatabaseHandler(app);
 
 // setup sendmail
 app.sendmail = require('sendmail')({
@@ -69,6 +73,17 @@ app.use(require('serve-favicon')(publicPath + 'favicon.ico'));
 app.use('/public/', express.static(publicPath));
 app.use('/uploads/', express.static(defaultPath + 'uploads/'));
 
+// authentication
+const auth = require('./middleware/auth');
+// for security reason remove the powered by header
+app.use(require('./middleware/removePoweredBy'));
+// CORS Policy things
+app.use(require('./middleware/cors'));
+// Content security headers
+app.use(require('./middleware/contentSecurityPolicy'));
+// adding jwt authentication for api
+app.use(auth.injectCSRF);
+
 // Basic redirects
 app.get('/github', async (_, res) => res.redirect('https://github.com/Safe-Oasis'));
 app.get('/discord', async (_, res) => res.redirect('https://discord.gg/fmjVTKH9Gy'));
@@ -84,16 +99,16 @@ app.get('/email', async (_, res) => res.redirect('mailto:contact@safeoasis.xyz')
 app.get('/robots.txt', async (_, res) => res.sendFile('./public/robots.txt'));
 
 // makes expres able to read uploaded files
-// app.use(
-//     fileUpload({
-//         useTempFiles: true,
-//         tempFileDir: '/tmp/',
-//         limits: { fileSize: 50 * 1024 * 1024 },
-//         limitHandler: (req, res) => {
-//             return res.status(413).json({ error: true, message: 'FILE TOO BIG (max 50mb)' });
-//         },
-//     })
-// );
+app.use(
+    fileUpload({
+        useTempFiles: true,
+        tempFileDir: '/tmp/',
+        limits: { fileSize: 50 * 1024 * 1024 },
+        limitHandler: (req, res) => {
+            return res.status(413).json({ error: true, message: 'FILE TOO BIG (max 50mb)' });
+        },
+    })
+);
 
 // 404 Handling
 app.all('*', async (_, res) => {
