@@ -1,0 +1,49 @@
+{
+    "ignore": ["HEADER", ".*", "**/*.md", "*.md", "./dist/*", "./build/*", "./public/*"],
+    "license": "HEADER",
+    "licenseFormats": {
+        "default": {
+            "prepend": "/**",
+            "append": " */\n",
+            "eachLine": {
+                "prepend": " * "
+            }
+        },
+        "js": {
+            "prepend": "/**",
+            "append": " */\n",
+            "eachLine": {
+                "prepend": " * "
+            }
+        },
+        "jsx": {
+            "prepend": "/**",
+            "append": " */\n",
+            "eachLine": {
+                "prepend": " * "
+            }
+        },
+        "ejs": {
+            "prepend": "<!--",
+            "append": " -->\n",
+            "eachLine": {
+                "prepend": " - "
+            }
+        },
+        "html": {
+            "prepend": "<!--",
+            "append": " -->\n",
+            "eachLine": {
+                "prepend": " - "
+            }
+        },
+        "scss": {
+            "prepend": "/**",
+            "append": " */\n",
+            "eachLine": {
+                "prepend": " * "
+            }
+        }
+    },
+    "trailingWhitespace": "TRIM"
+}
